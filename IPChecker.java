@@ -97,6 +97,8 @@ public class IPChecker {
 		
     public static void main (String args[]) {
     	IPChecker cc = IPChecker.getInstance();
+    	Date dd = new Date(System.currentTimeMillis());
+    	System.out.println("Checked at: " + dd);
     	String ip = cc.getPublicIP();
     	if (ip == null) {
     		System.out.println("Some problem with getting IP");
@@ -111,7 +113,6 @@ public class IPChecker {
 	    	if (!persistedIP.trim().equals(ip.trim())) {
 	    		System.out.println("New IP is different from Old IP, send an email");
 	    		String[] toAddr = { "mohanpraveen@yahoo.com" };
-	    		Date dd = new Date(System.currentTimeMillis());
 	    		String body = "Public IP address of the mannai router has changed. Please update the DNS entry\n" +
 	    		"Checked at: " + dd + "\n" +
 	    		"Current IP: " + oldIP + "\n" +
