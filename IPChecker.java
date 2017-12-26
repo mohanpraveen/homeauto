@@ -112,12 +112,12 @@ public class IPChecker {
 		if (!oldIP.trim().equals(ip.trim())) {
 	    	if (!persistedIP.trim().equals(ip.trim())) {
 	    		System.out.println("New IP is different from Old IP, send an email");
-	    		String[] toAddr = { "mohanpraveen@yahoo.com" };
+	    		String[] toAddr = { "mohanpraveen@yahoo.com", "cpviswa@yahoo.com" };
 	    		String body = "Public IP address of the mannai router has changed. Please update the DNS entry\n" +
 	    		"Checked at: " + dd + "\n" +
 	    		"Current IP: " + oldIP + "\n" +
 	    		"New IP: " + ip + "\n" +
-	    		"DNS weblink: http://dlinkddns.com\n"+
+	    		"DNS weblink: https://www.dlinkddns.com\n"+
 	    		"username: mohanpraveen\n";
 	    		MailClient.sendFromGMail("mohanpraveen77", "tn07k9175", toAddr, "Mannai Router IP Changed", body);
 	    		System.out.println("Persist the new IP");
