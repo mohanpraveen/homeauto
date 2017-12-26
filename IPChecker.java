@@ -4,10 +4,12 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.io.*;
 import java.util.Date;
+import java.util.Properties;
 
 public class IPChecker {
 	private static IPChecker check = null;
 	private String ipFile = "ip.txt";
+	Properties prop = new Properties();
 	private String IPURL[] = {
 		"http://checkip.amazonaws.com", 
 		"http://icanhazip.com/", 
@@ -97,6 +99,14 @@ public class IPChecker {
 		
     public static void main (String args[]) {
     	IPChecker cc = IPChecker.getInstance();
+    	try {
+    		InputStream input = new FileInputStream("email.properties");
+    		cc.prop.load(input);
+    	} catch (Exception e) {
+    		System.out.println("Error reading properties file");
+    		e.printStackTrace();
+    		System.exit(1);
+    	}
     	Date dd = new Date(System.currentTimeMillis());
     	System.out.println("Checked at: " + dd);
     	String ip = cc.getPublicIP();
@@ -109,17 +119,20 @@ public class IPChecker {
     	String oldIP = cc.getWebIP();
     	System.out.println("Web IP: " + oldIP);
     	String persistedIP = cc.readExistingIP();
+    	
 		if (!oldIP.trim().equals(ip.trim())) {
 	    	if (!persistedIP.trim().equals(ip.trim())) {
 	    		System.out.println("New IP is different from Old IP, send an email");
-	    		String[] toAddr = { "mohanpraveen@yahoo.com", "cpviswa@yahoo.com" };
-	    		String body = "Public IP address of the mannai router has changed. Please update the DNS entry\n" +
+	    		String toAddress = cc.prop.getProperty("senders");
+	    		String[] toAddr = toAddress.split(",");
+	    		String header = cc.prop.getProperty("body");
+	    		String body = header + "\n" + 
 	    		"Checked at: " + dd + "\n" +
 	    		"Current IP: " + oldIP + "\n" +
 	    		"New IP: " + ip + "\n" +
-	    		"DNS weblink: https://www.dlinkddns.com\n"+
-	    		"username: mohanpraveen\n";
-	    		MailClient.sendFromGMail("mohanpraveen77", "tn07k9175", toAddr, "Mannai Router IP Changed", body);
+	    		"DNS weblink: " + cc.prop.getProperty("weblink") + "\n"+
+	    		"username: " + cc.prop.getProperty("dnsusername") + "\n";
+	    		MailClient.sendFromGMail(cc.prop.getProperty("username"), cc.prop.getProperty("password"), toAddr, "Mannai Router IP Changed", body);
 	    		System.out.println("Persist the new IP");
 	    		cc.PersistIPAddress(ip);
 	    	} else {
